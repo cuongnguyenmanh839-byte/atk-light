@@ -242,6 +242,40 @@ export function DeviceSettings({ state, rgb }: { state: Lighting; rgb?: RgbLedHo
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* ── THÔNG TIN HƯỚNG DẪN ĐỔI MẠNG ───────────────────────────────────── */}
+      {typeof window !== 'undefined' && window.location.protocol === 'https:' && (
+        <div
+          style={{
+            padding: '12px 15px',
+            background: 'rgba(230, 140, 30, 0.15)',
+            border: '1px solid #d48b2a',
+            borderRadius: '8px',
+            fontSize: '12px',
+            color: '#ffdd99',
+            lineHeight: '1.6',
+            display: 'flex',
+            gap: '10px',
+            alignItems: 'flex-start',
+          }}
+        >
+          <span style={{ fontSize: '18px' }}>⚠️</span>
+          <div>
+            <strong style={{ color: '#fff0c8', fontSize: '13px' }}>
+              Trình duyệt đang chặn kết nối IP nội bộ (Lỗi Mixed Content):
+            </strong>
+            <br />
+            Bạn đang truy cập qua link bảo mật <code>https://</code>. Để kết nối được tới địa chỉ IP của ESP, bạn chỉ cần mở quyền 1 lần duy nhất:
+            <br />
+            • <strong>Bước 1:</strong> Bấm vào biểu tượng 🔒 hoặc ⚙️ ở góc trái thanh địa chỉ trình duyệt (cạnh chữ https://...).
+            <br />
+            • <strong>Bước 2:</strong> Chọn <em>Cài đặt trang web</em> (Site settings).
+            <br />
+            • <strong>Bước 3:</strong> Tìm dòng <em>Nội dung không an toàn</em> (Insecure content) → Đổi sang <strong>Cho phép</strong> (Allow).
+            <br />
+            • <strong>Bước 4:</strong> Quay lại web và bấm phím <strong>F5</strong> để kết nối lại!
+          </div>
+        </div>
+      )}
+
       <div
         style={{
           padding: '14px 16px',
