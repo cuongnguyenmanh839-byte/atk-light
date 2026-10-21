@@ -2,16 +2,18 @@
            HE THONG DIEU KHIEN CHIEU SANG ATK LIGHT 24/7
 ===========================================================
 
-1. LINK ONLINE CHAY QUA MAY TINH HIEN TAI (Cloudflare Tunnel):
-   https://wishlist-months-baby-mono.trycloudflare.com
+1. LINK WEB CLOUD 24/24 CHINH THUC (KHONG CAN BAT MAY TINH):
+   👉 https://cuongnguyenmanh839-byte.github.io/atk-light/
+   - Chay tren ha tang may chu Cloud toan cau cua GitHub.
+   - Hoat dong 24/24 vinh vien, khong bao gio bi tat.
+   - May tinh ca nhan o nha co the tat nguon hoan toan.
 
-2. LINK CLOUD 24/24 KHONG CAN MAY TINH (Render.com Free):
-   - GitHub Repository: https://github.com/cuongnguyenmanh839-byte/atk-light
-   - Link 1-Click Deploy: https://render.com/deploy?repo=https://github.com/cuongnguyenmanh839-byte/atk-light
-   - File khoi chay nhanh: Chay file 'MO-DEPLOY-RENDER-24-7.cmd'
+2. LINK ONLINE CHAY QUA MAY TINH (Cloudflare Tunnel tam thoi):
+   https://wishlist-months-baby-mono.trycloudflare.com
 
 3. APP ANDROID DIEU KHIEN TRUC TIEP KHONG CAN MAY TINH:
    - File APK cai tren dien thoai: releases\ATK-LIGHT-v4-modern-ui.apk
-   - Bat nguon 5V cho ESP32, mo App la dieu khien ngay!
+   - Chi can cắm sạc 5V cho ESP32, mo App tren dien thoai la dieu khien ngay!
 
 ===========================================================
+Thoi diem cap nhat: 2026-10-21 20:43:55
