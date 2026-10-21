@@ -23,42 +23,86 @@ export default function App() {
     return () => window.removeEventListener('resize', resize);
   }, []);
 
-  // Login modal can be opened by user via header or detail panel
+  // Default to desktop view so web always shows full desktop dashboard
+  const [layoutMode, setLayoutMode] = useState<'desktop' | 'mobile'>(() => {
+    const saved = localStorage.getItem('atk-layout-mode');
+    if (saved === 'mobile' || saved === 'desktop') return saved;
+    return 'desktop';
+  });
 
-  const mobile = size.width <= 768;
-  const desktopScale = Math.min(size.width / 900, (size.height - 12) / 556);
+  const isMobileView = layoutMode === 'mobile';
+  const desktopScale = Math.max(0.65, Math.min(size.width / 900, (size.height - 12) / 556));
+
+  const toggleLayoutMode = () => {
+    const next = isMobileView ? 'desktop' : 'mobile';
+    setLayoutMode(next);
+    localStorage.setItem('atk-layout-mode', next);
+  };
 
   return (
     <MusicProvider>
       <div
-        className={mobile ? 'app-shell mobile-shell' : 'app-shell desktop-shell'}
+        className={isMobileView ? 'app-shell mobile-shell' : 'app-shell desktop-shell'}
         style={{
           minHeight: '100vh',
-          height: mobile ? 'auto' : size.height,
+          height: isMobileView ? 'auto' : size.height,
           display: 'flex',
-          alignItems: mobile ? 'stretch' : 'center',
+          alignItems: isMobileView ? 'stretch' : 'center',
           justifyContent: 'center',
-          overflowY: mobile ? 'auto' : 'hidden',
+          overflowY: isMobileView ? 'auto' : 'hidden',
+          overflowX: isMobileView ? 'hidden' : 'auto',
           background: '#150505',
         }}
       >
         <div
-          className={mobile ? 'mobile-root-wrapper' : 'scaled-app'}
+          className={isMobileView ? 'mobile-root-wrapper' : 'scaled-app'}
           style={
-            mobile
+            isMobileView
               ? { width: '100%', minHeight: '100vh' }
               : {
-                  width: size.width / desktopScale,
+                  width: Math.max(900, size.width / desktopScale),
                   minHeight: 556,
                   zoom: desktopScale,
                 }
           }
         >
-          {mobile ? (
+          {isMobileView ? (
             <Mobile state={state} rgb={rgb} onNavigate={setPage} currentPage={page} />
           ) : (
             <Desktop state={state} rgb={rgb} onNavigate={setPage} currentPage={page} />
           )}
+        </div>
+
+        {/* Nút chuyển đổi nhanh Giao diện Máy tính / Điện thoại */}
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '16px',
+            left: '16px',
+            zIndex: 9999,
+          }}
+        >
+          <button
+            onClick={toggleLayoutMode}
+            style={{
+              background: 'linear-gradient(135deg, #b58b42, #755020)',
+              color: '#fff0c8',
+              border: '1px solid #ffe29b',
+              borderRadius: '24px',
+              padding: '7px 15px',
+              fontSize: '11px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              boxShadow: '0 4px 15px rgba(0,0,0,0.6)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              backdropFilter: 'blur(8px)',
+              transition: 'transform 0.2s',
+            }}
+          >
+            {isMobileView ? '🖥️ Chuyển sang Web Máy Tính' : '📱 Xem giao diện Điện Thoại'}
+          </button>
         </div>
 
         {page !== 'Tổng quan' && (
