@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  atk-light:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: atk_light_247
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_URL=file:/app/data/prod.db
+      - JWT_SECRET=atk-light-super-secure-production-key-2026
+      - JWT_REFRESH_SECRET=atk-light-refresh-secure-production-key-2026
+      - ESP32_URL=http://192.168.137.195
+      - ESP32_TOKEN=atk2026
+    volumes:
+      - atk_data:/app/data
+
+volumes:
+  atk_data:

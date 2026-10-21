@@ -1,0 +1,224 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────────────
+// USERS & RBAC
+// Role: SUPER_ADMIN | ADMIN | OPERATOR | VIEWER
+// Status: ACTIVE | LOCKED | DISABLED
+// ─────────────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  username      String    @unique
+  email         String    @unique
+  passwordHash  String
+  fullName      String
+  role          String    @default("VIEWER")
+  status        String    @default("ACTIVE")
+  avatar        String?
+  lastLoginAt   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  refreshTokens RefreshToken[]
+  auditLogs     AuditLog[]
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────────────
+// SYSTEM STATE
+// ─────────────────────────────────────────────────────
+
+model SystemState {
+  id               String   @id @default("singleton")
+  power            Boolean  @default(true)
+  brightness       Int      @default(70)
+  colorTemperature Int      @default(4000)
+  mode             Int      @default(0)
+  updatedAt        DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// AREAS (Khu vực)
+// ─────────────────────────────────────────────────────
+
+model Area {
+  id               String   @id @default(cuid())
+  code             String   @unique
+  name             String
+  description      String?
+  icon             String   @default("mountain")
+  mapX             Float    @default(0)
+  mapY             Float    @default(0)
+  power            Boolean  @default(true)
+  brightness       Int      @default(70)
+  colorTemperature Int      @default(4000)
+  totalLights      Int      @default(0)
+  activeLights     Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  lights        LightDevice[]
+  energyRecords EnergyRecord[]
+  alerts        Alert[]
+  schedules     Schedule[]
+}
+
+// ─────────────────────────────────────────────────────
+// LIGHT DEVICES
+// status: ONLINE | OFFLINE | ERROR
+// ─────────────────────────────────────────────────────
+
+model LightDevice {
+  id               String    @id @default(cuid())
+  areaId           String
+  area             Area      @relation(fields: [areaId], references: [id], onDelete: Cascade)
+  name             String
+  deviceCode       String    @unique
+  status           String    @default("OFFLINE")
+  power            Boolean   @default(false)
+  brightness       Int       @default(70)
+  colorTemperature Int       @default(4000)
+  powerConsumption Float?
+  lastSeenAt       DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  energyRecords EnergyRecord[]
+  alerts        Alert[]
+}
+
+// ─────────────────────────────────────────────────────
+// LIGHTING SCENES
+// ─────────────────────────────────────────────────────
+
+model LightingScene {
+  id               String   @id @default(cuid())
+  code             String   @unique
+  name             String
+  description      String
+  brightness       Int
+  colorTemperature Int
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// SCHEDULES
+// ─────────────────────────────────────────────────────
+
+model Schedule {
+  id               String    @id @default(cuid())
+  name             String
+  areaId           String?
+  area             Area?     @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  startTime        String
+  endTime          String?
+  daysOfWeek       String    @default("1,2,3,4,5,6,7")
+  sceneCode        String?
+  brightness       Int?
+  colorTemperature Int?
+  power            Boolean   @default(true)
+  enabled          Boolean   @default(true)
+  lastExecutedAt   DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+// ─────────────────────────────────────────────────────
+// ENERGY RECORDS
+// ─────────────────────────────────────────────────────
+
+model EnergyRecord {
+  id         String       @id @default(cuid())
+  areaId     String?
+  area       Area?        @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  deviceId   String?
+  device     LightDevice? @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+  power      Float        @default(0)
+  energy     Float        @default(0)
+  recordedAt DateTime     @default(now())
+
+  @@index([recordedAt])
+  @@index([areaId, recordedAt])
+}
+
+// ─────────────────────────────────────────────────────
+// ALERTS
+// severity: INFO | WARNING | CRITICAL
+// ─────────────────────────────────────────────────────
+
+model Alert {
+  id             String       @id @default(cuid())
+  type           String
+  severity       String       @default("INFO")
+  title          String
+  message        String
+  areaId         String?
+  area           Area?        @relation(fields: [areaId], references: [id], onDelete: SetNull)
+  deviceId       String?
+  device         LightDevice? @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+  acknowledged   Boolean      @default(false)
+  acknowledgedAt DateTime?
+  acknowledgedBy String?
+  createdAt      DateTime     @default(now())
+
+  @@index([createdAt])
+  @@index([acknowledged])
+}
+
+// ─────────────────────────────────────────────────────
+// AUDIT LOG
+// ─────────────────────────────────────────────────────
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action     String
+  resource   String
+  resourceId String?
+  oldValue   String?
+  newValue   String?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────────────────
+// SYSTEM SETTINGS
+// ─────────────────────────────────────────────────────
+
+model SystemSettings {
+  id                   String   @id @default("singleton")
+  siteName             String   @default("ATK Định Hóa")
+  location             String   @default("Định Hóa, Thái Nguyên")
+  timezone             String   @default("Asia/Ho_Chi_Minh")
+  mqttUrl              String?
+  mqttPort             Int      @default(1883)
+  simulationMode       Boolean  @default(true)
+  offlineThresholdSecs Int      @default(300)
+  energyUnit           String   @default("kWh")
+  updatedAt            DateTime @updatedAt
+}
