@@ -1,13 +1,17 @@
-﻿============================================================
-           LINK TRUY CAP WEB ATK LIGHT ONLINE 24/7
-============================================================
+===========================================================
+           HE THONG DIEU KHIEN CHIEU SANG ATK LIGHT 24/7
+===========================================================
 
-LINK TRUY CAP TRUC TIEP:
-https://wishlist-months-baby-mono.trycloudflare.com
+1. LINK ONLINE CHAY QUA MAY TINH HIEN TAI (Cloudflare Tunnel):
+   https://wishlist-months-baby-mono.trycloudflare.com
 
-- Mo link tren tren may tinh hoac dien thoai bat ky (4G, 5G, Wifi khac deu vao duoc).
-- Web chay 24/7 thong qua Cloudflare Tunnel ma hoa HTTPS bao mat.
-- Da tao loi tat 'LINK-TRUY-CAP-ONLINE' ngay tren Man Hinh Desktop!
+2. LINK CLOUD 24/24 KHONG CAN MAY TINH (Render.com Free):
+   - GitHub Repository: https://github.com/cuongnguyenmanh839-byte/atk-light
+   - Link 1-Click Deploy: https://render.com/deploy?repo=https://github.com/cuongnguyenmanh839-byte/atk-light
+   - File khoi chay nhanh: Chay file 'MO-DEPLOY-RENDER-24-7.cmd'
 
-Thoi diem cap nhat: 2026-10-21 20:19:37
-============================================================
+3. APP ANDROID DIEU KHIEN TRUC TIEP KHONG CAN MAY TINH:
+   - File APK cai tren dien thoai: releases\ATK-LIGHT-v4-modern-ui.apk
+   - Bat nguon 5V cho ESP32, mo App la dieu khien ngay!
+
+===========================================================
