@@ -456,8 +456,9 @@ export function useLighting() {
       log('Đã kết nối ESP8266', `Địa chỉ: ${configToUse.url} (Relay 4 kênh)`);
     } catch (e: any) {
       console.warn('ESP8266 direct connect warning:', e?.message);
-      // Fallback cleanly to server simulation without locking UI with red error
       setLive(false);
+      setConnected(false);
+      throw e;
     } finally {
       setBusy(false);
     }

@@ -45,7 +45,11 @@ export function DeviceSettings({ state, rgb }: { state: Lighting; rgb?: RgbLedHo
       }
       setScanStatus8266(`✅ Đã kết nối thành công với ESP8266 tại ${cleanUrl}`);
     } catch (e: any) {
-      setScanStatus8266(`❌ Không thể kết nối tới ${cleanUrl}: ${e.message || 'Hết thời gian chờ phản hồi'}`);
+      const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+      const httpsNote = isHttps
+        ? ' (Lưu ý: Bạn đang mở web HTTPS, Chrome chặn kết nối IP nội bộ. Vui lòng bấm biểu tượng 🔒 trên thanh địa chỉ -> Cho phép "Nội dung không an toàn" -> F5)'
+        : '';
+      setScanStatus8266(`❌ Không thể kết nối tới ${cleanUrl}: ${e.message || 'Thiết bị không phản hồi'}${httpsNote}`);
     }
   };
 
